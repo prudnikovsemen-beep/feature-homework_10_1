@@ -1,24 +1,24 @@
 [tool.poetry]
 name = "my_project_312"
 version = "0.1.0"
-description = ""
+description = "Bank masking utilities"
 authors = ["Semen"]
 readme = "README.md"
+package-mode = false          # <-- обязательно: отключаем упаковку проекта
 
 [tool.poetry.dependencies]
 python = "^3.12"
+# requests можно оставить, если реально нужен, иначе можно удалить
 requests = "^2.34.2"
 
+# Все инструменты для разработки и тестов — в одной группе dev
 [tool.poetry.group.dev.dependencies]
-pytest = "^9.0"
-pytest-cov = "^5.0"
-flake8 = "^7.0"
-black = "^24.0"
-mypy = "^1.10"
-isort = "^5.13"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^9.1.1"
+pytest = "^9.0.0"
+pytest-cov = "^5.0.0"
+flake8 = "^7.0.0"
+black = "^24.0.0"
+mypy = "^1.10.0"
+isort = "^5.13.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -30,12 +30,17 @@ target-version = ["py312"]
 
 [tool.isort]
 profile = "black"
+line-length = 119
 
 [tool.mypy]
 python_version = "3.12"
 warn_return_any = true
 disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
 
 [tool.flake8]
 max-line-length = 119
 extend-ignore = ["E203"]
+exclude = ".git,__pycache__,build,dist,.venv,tests"
+
