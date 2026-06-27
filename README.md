@@ -33,7 +33,9 @@
    ```bash
    curl -sSL https://install.python-poetry.org | python3 -
 
-### Структура проекта
+## Структура проекта
+
+```
 my_project/
 ├── .gitignore                # игнорируемые файлы
 ├── pyproject.toml            # конфигурация проекта и зависимости
@@ -50,3 +52,4 @@ my_project/
     ├── test_widget.py         # тесты для функций из widget.py
     └── test_processing.py     # тесты для функций из processing.py
 
+```
