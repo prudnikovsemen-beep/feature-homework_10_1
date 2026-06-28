@@ -1,48 +1,54 @@
+# src/widget.py
+from datetime import datetime, timedelta
+from typing import Optional
+
 from src.masks import get_mask_card_number, get_mask_account
 
 
-def mask_account_card(input_string: str) -> str:
-    """
-    Маскирует номер карты или счёта в строке.
+def mask_account_card(line: str) -> Optional[str]:
+    if not line or not isinstance(line, str):
+        return None
 
-    Args:
-        input_string (str): Строка, содержащая тип и номер карты/счёта.
-            Примеры: "Visa Platinum 7000792289606361", "Счет 73654108430135874305".
+    digits_end = len(line)
+    while digits_end > 0 and line[digits_end - 1].isdigit():
+        digits_end -= 1
 
-    Returns:
-        str: Строка с замаскированным номером.
-    """
-    # Разделяем строку на части, последняя часть — номер
-    parts = input_string.split()
-    if not parts:
-        return input_string
+    number_part = line[digits_end:].strip()
+    prefix_part = line[:digits_end].strip()
 
-    number = parts[-1]  # последний элемент — номер
-    prefix = " ".join(parts[:-1])  # всё, кроме номера
+    if not number_part.isdigit() or len(number_part) == 0:
+        return None
 
-    # Проверяем, является ли номер счётом (начинается со слова "Счёт" или "Счет")
-    if prefix.endswith("Счет") or prefix.endswith("Счёт"):
-        masked_number = get_mask_account(number)
+    if len(number_part) == 16:
+        masked_number = get_mask_card_number(number_part)
+        if masked_number is None:
+            return None
     else:
-        # Предполагаем, что это карта
-        masked_number = get_mask_card_number(number)
+        masked_number = get_mask_account(number_part)
+        if masked_number is None:
+            return None
 
-    return f"{prefix} {masked_number}"
+    if prefix_part == "":
+        return masked_number
+
+    return f"{prefix_part} {masked_number}"
 
 
-def get_date(date_string: str) -> str:
-    """
-    Преобразует дату из формата ISO в формат ДД.ММ.ГГГГ.
+def get_date(iso_string: str) -> Optional[str]:
+    if not iso_string or not isinstance(iso_string, str):
+        return None
 
-    Args:
-        date_string (str): Дата в формате "2024-03-11T02:26:18.671407".
+    iso_string = iso_string.strip()
+    if iso_string == "":
+        return None
 
-    Returns:
-        str: Дата в формате "ДД.ММ.ГГГГ".
-    """
-    from datetime import datetime
+    try:
+        dt = datetime.fromisoformat(iso_string)
 
-    # Парсим дату из строки ISO
-    dt = datetime.fromisoformat(date_string.replace("Z", "+00:00"))
-    # Форматируем в нужный формат
-    return dt.strftime("%d.%m.%Y")
+        # Хитрость для округления секунд: добавляем полсекунды, потом убираем микросекунды
+        dt_rounded = dt + timedelta(microseconds=500000)
+        dt_rounded = dt_rounded.replace(microsecond=0)
+
+        return dt_rounded.strftime("%d.%m.%Y %H:%M:%S")
+    except (ValueError, TypeError):
+        return None

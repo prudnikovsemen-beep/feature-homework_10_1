@@ -1,33 +1,27 @@
-from datetime import datetime
+from typing import List, Dict, Any, Optional
 
 
-def filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict]:
+def filter_by_state(operations: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
     """
-    Фильтрует список операций по статусу.
+    Фильтрует список операций по полю state.
 
-    Args:
-        operations (list[dict]): Список словарей с операциями.
-        state (str): Статус для фильтрации (по умолчанию 'EXECUTED').
-
-    Returns:
-        list[dict]: Отфильтрованный список операций.
+    :param operations: список словарей с данными об операциях
+    :param state: значение поля state для фильтрации (по умолчанию 'EXECUTED')
+    :return: новый список словарей, где state == state
     """
     return [op for op in operations if op.get("state") == state]
 
 
-def sort_by_date(operations: list[dict], reverse: bool = True) -> list[dict]:
+def sort_by_date(operations: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
     """
-    Сортирует список операций по дате.
+    Сортирует список операций по дате (поле date).
 
-    Args:
-        operations (list[dict]): Список словарей с операциями.
-        reverse (bool): Порядок сортировки (True — убывание, False — возрастание).
+    Формат даты: ISO 8601 (например, '2019-07-03T18:35:29.512364').
+    Такие строки можно сортировать лексикографически.
 
-    Returns:
-        list[dict]: Отсортированный список операций.
+    :param operations: список словарей с данными об операциях
+    :param reverse: если True — сортировка по убыванию (сначала новые), иначе по возрастанию
+    :return: новый отсортированный список
     """
-
-    def parse_date(date_str: str) -> datetime:
-        return datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-
-    return sorted(operations, key=lambda op: parse_date(op["date"]), reverse=reverse)
+    # Создаём новый список, не меняя исходный
+    return sorted(operations, key=lambda op: op.get("date", ""), reverse=reverse)

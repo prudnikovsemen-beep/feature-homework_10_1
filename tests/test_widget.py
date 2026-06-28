@@ -1,21 +1,34 @@
-import unittest
-from src.widget import get_date
+import pytest
+from src.widget import mask_account_card, get_date
 
-class TestWidgetFunctions(unittest.TestCase):
-    def test_get_date_valid(self):
-        """Тест корректного преобразования даты."""
-        input_date = "2024-03-11T02:26:18.671407"
-        expected = "11.03.2024"
-        result = get_date(input_date)
-        self.assertEqual(result, expected)
+@pytest.mark.parametrize(
+    "value,expected_type",
+    [
+        ("4276123456789012", "card"),
+        ("40817810000001234567", "account"),
+        ("not a number", None),
+    ],
+)
+def test_mask_account_card_type_detection(value, expected_type):
+    # Здесь зависит от вашей реализации: либо возвращает тип, либо сразу маску.
+    # Если сразу маска — проверяйте формат маски.
+    result = mask_account_card(value)
+    if expected_type == "card":
+        assert result.startswith("4") and "****" in result
+    elif expected_type == "account":
+        assert "****" in result and not result.startswith("42")
+    else:
+        assert result is None
 
-    def test_get_date_edge_cases(self):
-        """Тест крайних случаев для преобразования даты."""
-        test_cases = [
-            ("2000-01-01T00:00:00", "01.01.2000"),
-            ("2099-12-31T23:59:59.999999", "31.12.2099"),
-        ]
-        for input_date, expected in test_cases:
-            with self.subTest(input_date=input_date):
-                result = get_date(input_date)
-                self.assertEqual(result, expected)
+
+@pytest.mark.parametrize(
+    "date_str,expected_date_str",
+    [
+        ("2019-07-01T08:17:53.596580", "01.07.2019 08:17:54"),
+        ("2019-07-02T06:34:43.162004", "02.07.2019 06:34:43"),
+        ("", None),
+        ("invalid", None),
+    ],
+)
+def test_get_date(date_str, expected_date_str):
+    assert get_date(date_str) == expected_date_str
