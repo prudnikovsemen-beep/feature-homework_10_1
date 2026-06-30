@@ -1,7 +1,10 @@
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 
-def filter_by_state(operations: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
+def filter_by_state(
+    operations: list[dict[str, Any]],
+    state: str = "EXECUTED",
+) -> list[dict[str, Any]]:
     """
     Фильтрует список операций по полю state.
 
@@ -12,7 +15,10 @@ def filter_by_state(operations: List[Dict[str, Any]], state: str = "EXECUTED") -
     return [op for op in operations if op.get("state") == state]
 
 
-def sort_by_date(operations: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
+def sort_by_date(
+    operations: list[dict[str, Any]],
+    reverse: bool = True,
+) -> list[dict[str, Any]]:
     """
     Сортирует список операций по дате (поле date).
 
@@ -23,5 +29,8 @@ def sort_by_date(operations: List[Dict[str, Any]], reverse: bool = True) -> List
     :param reverse: если True — сортировка по убыванию (сначала новые), иначе по возрастанию
     :return: новый отсортированный список
     """
-    # Создаём новый список, не меняя исходный
-    return sorted(operations, key=lambda op: op.get("date", ""), reverse=reverse)
+    return sorted(
+        operations,
+        key=lambda op: op.get("date", ""),
+        reverse=reverse,
+    )
