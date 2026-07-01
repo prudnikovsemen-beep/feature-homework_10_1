@@ -13,8 +13,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.14"
-requests = "2.28.0"
+python = "^3.12"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.0.0"
@@ -24,10 +23,12 @@ mypy = "^1.9.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
+requests = "^2.34.2"
+pytest-cov = "^7.1.0"
 
 [tool.black]
 line-length = 119
-target-version = ['py314']
+target-version = ['py312']
 
 [tool.isort]
 profile = "black"
@@ -37,7 +38,7 @@ known_first_party = "src"
 skip_glob = ["tests/*", "venv/*"]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -57,6 +58,6 @@ per-file-ignores = "__init__.py:F401"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
-python_files = "tests_*.py"
+python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
